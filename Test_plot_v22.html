@@ -1236,15 +1236,21 @@ if (ok==1){
         salTPL[i]=0;
     }    
 }
-    
-var ok_PS = 0;
+
+var salPSH = [];
+var salPSM = [];
+var salPSL = [];
+var ok_PS = 1;
 if (ok_PS==1){
-    variPS = Analythic(sigma, returnPS,T,salaryvec,ps_rate*0.67*12,PSM,PSH,PSL);
+    Analythic_ver2(sigma, returnTP,timeS,timeP,timeE,salaryvec,ps_rate*0.67*12,PSM,PSH,PSL,2,DTPS,salPSH,salPSM,salPSL);
 }else{
-    for (i=0;i<T;i++){
+    for (i=0;i<timeE-timeS;i++){
         PSM[i]=0;
         PSH[i]=0;
         PSL[i]=0;
+        salPSH[i]=0;
+        salPSM[i]=0;
+        salPSL[i]=0;
     }    
 }
 
@@ -1261,9 +1267,9 @@ var salPPL = [];
 Analythic_ver2(sigma, returnPP,timeS,timeP,timeE,salaryvec,0.025*(17.21/18.5)*12,PPv,PPv95,PPv05,1,DTTP,salPPH,salPPM,salPPL);
 
 for (i=0;i<(timeE-timeS);i++){
-    u2590[i]=PPv95[i]+TPH[i];
-    m2590[i]=PPv[i]+TPM[i];
-    d2590[i]=PPv05[i]+TPL[i];
+    u2590[i]=PPv95[i]+TPH[i]+PSH[i];
+    m2590[i]=PPv[i]+TPM[i]+PSM[i];
+    d2590[i]=PPv05[i]+TPL[i]+PSL[i];
 }
 console.log("PPH sal: "+salPPH)
 /*
@@ -1360,12 +1366,12 @@ var GPM;
 var GPL;
 for (i=T;i<T+T2-1;i++){
     GPM = utbetalningGP(GP_bas,salvecIPM[i-T]/12);
-    salaryvec[i]= (salvecIPM[i-T]+salPPM[i])/12 +GPM + salTPM[i]/12 + salvecPSM[i-T]/12;
+    salaryvec[i]= (salvecIPM[i-T]+salPPM[i])/12 +GPM + salTPM[i]/12 + salPSM[i]/12;
     GPH = utbetalningGP(GP_bas,salvecIPH[i-T]/12);
-    salaryvecH[i]=(salvecIPH[i-T]+salPPH[i])/12 + GPH + salTPH[i]/12 + salvecPSH[i-T]/12;
+    salaryvecH[i]=(salvecIPH[i-T]+salPPH[i])/12 + GPH + salTPH[i]/12 + salPSH[i]/12;
     GP[i]=GPM;
     GPL =  utbetalningGP(GP_bas,salvecIPL[i-T]/12);
-    salaryvecL[i]=(salvecIPL[i-T]+salPPL[i])/12 +GPL + salTPL[i]/12 + salvecPSL[i-T]/12;
+    salaryvecL[i]=(salvecIPL[i-T]+salPPL[i])/12 +GPL + salTPL[i]/12 + salPSL[i]/12;
     j=j-0.1;
 }
 if (id==4){
@@ -1395,7 +1401,7 @@ for (i=T;i<T+T2-1;i++){
 }*/
 //console.log("IPSALVEC: "+salvecIPM+ " GP VECTOR: "+GP)
 console.log(GP)
-plotfunc_3_lines_id(salaryvec,salaryvecH,salaryvecL,timeS,timeE,Math.max.apply(null,salaryvec),color,"#plot3","Ålder","Lön/Pension(kr)","Lön över tiden (Alla senarior)","plot3_id");
+plotfunc_3_lines_id(salaryvec,salaryvecH,salaryvecL,timeS,timeE,Math.max.apply(null,salaryvecH),color,"#plot3","Ålder","Lön/Pension(kr)","Lön över tiden (Alla senarior)","plot3_id");
 document.getElementById("BeforeP").innerHTML = "Till höger kan man se hur den totala pensionen kommer att utvecklas om man har den löneutveckling som är antagen up till pensionsålder. Efter pensions ålder så kan man se hur uttagen kommer påverka besparingarna. Sannolikheten att hamna någon stans innom intervallet på figuren är 90% vilket betyder att man kan med bara 5% sannolikhet hamna över det översa strecket och under det understa. Här har man antagit samma investerings strategi från 25 år till 64 år vilket man i verkligheten inte gör. En aggresiv strategi kan bestå av 100% aktier fram till kanske 45 års ålder sedan börjar man byta ut aktier mot mer säkra räntepapper.";
 document.getElementById("pay").innerHTML = "Beroende på vad den totala acummulerade pensionen blir när man gå i pension så kommer de månads enliga utbetalningarna(lön) efter pension variera. Igen så representerar intervallet en 90% sannolikhet. Den här figuren är till för att demonstreara hur den totala pensionen faktisk kommer se ut om man ser det som månads utbetalningar. Detta för att göra det enklare för indevider att lättare koppla pensionen till det vardagliga livet. Här kan ett tankesett vara att tänka hur pension kan jag riskera att ha och därmed anpassa risken efter det. Om man inte kan eller inte är villig att förlora mycket så kan det vara fördelaktigt att anpassa pensionen till en lägre risk. Notera att det ser ut som att pensionen sjunker varje månad. Det gör den faktiskt men det finns en förklaring som jag tror att du gillar. Förklaringen är att det finns en så kallad förtidsränta som är på ca 1.5% som gör att du får ut mer av pensionen i början av pensionen då man kanske också vill ha mer. Man kan säga att du tar ut lite av pensionen i förtid istället för att ha samma pension livet ut.";
 document.getElementById("high1").innerHTML = parseInt(x2_95[1]/(12*2));
@@ -1492,14 +1498,15 @@ d3.select("#pension_overtime").remove();
 //console.log(slider1.value)
 var t = parseInt(slider1.value);
 output1.innerHTML = slider1.value;
-t=t-65;
-GPM = utbetalningGP(GP_bas,salvecIPM[t]/12);
+t=t-26;
+// år 65 i vektorn TPM,PSM,PPM börjar på plats 40 och för IP börjar den på plats 0;
+GPM = utbetalningGP(GP_bas,salvecIPM[t-39]/12);
 //salaryvec[i]= (salvecIPM[i-T]+salvecPPM[i-T])/12 +GPM;
-var data1 = {IPension: salvecIPM[t]/12, PPension: salvecPPM[t]/12, GPension: GPM, TPension: salvecTPM[t]/12, PSave: salvecPSM[t]/12}
+var data1 = {IPension: salvecIPM[t-39]/12, PPension: salPPM[t]/12, GPension: GPM, TPension: salTPM[t]/12, PSave: salPSM[t]/12}
 piechart(data1,"pension_overtime","#piepension");
-var tot =  salvecIPM[t]/12+ salvecPPM[t]/12+ GPM+ salvecTPM[t]/12+ salvecPSM[t]/12;
+var tot =  salvecIPM[t-39]/12+ salPPM[t]/12+ GPM+ salTPM[t]/12+ salPSM[t]/12;
     
-document.getElementById("pensionsdelar").innerHTML = "Till vänster kan du se ett tårt diagram. Tanken med tårtdiagramet är att visualisera hur månadsutbetalningarna från de olika pensionsdelarna förändras med tiden i procent. Det man kan se är att när inkomstpensionen minskar så ökar garantipensionen. Premiepensionen håller sig jämn över åren. Det beror på att delningstalet som används för att bäräkna utbetalningarna för premiepension räknas om varje år. Tjänste pensionen beror på hur du har betämt hur den ska tas ut. Av hela pensionen motsvarar avrundat till närmaste tiondel. <br/> IP: " + parseInt(1000*(salvecIPM[t]/12)/tot)/10 + "% PP: " +  parseInt(1000*(salvecPPM[t]/12)/tot)/10 + "% TP: " +  parseInt(1000*(salvecTPM[t]/12)/tot)/10 + "% PS: " +  parseInt(1000*(salvecPSM[t]/12)/tot)/10 + "% GP: " +  parseInt(1000*(GPM)/tot)/10+"%." 
+document.getElementById("pensionsdelar").innerHTML = "Till vänster kan du se ett tårt diagram. Tanken med tårtdiagramet är att visualisera hur månadsutbetalningarna från de olika pensionsdelarna förändras med tiden i procent. Det man kan se är att när inkomstpensionen minskar så ökar garantipensionen. Premiepensionen håller sig jämn över åren. Det beror på att delningstalet som används för att bäräkna utbetalningarna för premiepension räknas om varje år. Tjänste pensionen beror på hur du har betämt hur den ska tas ut. Av hela pensionen motsvarar avrundat till närmaste tiondel. <br/> IP: " + parseInt(1000*(salvecIPM[t-39]/12)/tot)/10 + "% PP: " +  parseInt(1000*(salPPM[t]/12)/tot)/10 + "% TP: " +  parseInt(1000*(salTPM[t]/12)/tot)/10 + "% PS: " +  parseInt(1000*(salPSM[t]/12)/tot)/10 + "% GP: " +  parseInt(1000*(GPM)/tot)/10+"%." 
 }
 //boxPlot(mean1,x1_95,x1_05,"#box");
 //plotting end 
