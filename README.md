@@ -12,4 +12,5 @@ Det går att inkludera privat sparande om man söker i koden med "ctrl F" och le
 Det samma gäller tjänstepensionen. Vill man sänga av den kan man leta efter "ok" och sätta den till 0.
 ## Senaste versionen
 Den senaste verisonen är "Test_plot_ver23.html".</br>
-Jag har försökt att lägga till några vägledande kommentarer i koden för att underlätta läsningen.
+Jag har försökt att lägga till några vägledande kommentarer i koden för att underlätta läsningen. </br>
+I denna verison är även funktionen för att räka ut pensionen uppdaterad så resultatet ser mer realistiskt ut.
