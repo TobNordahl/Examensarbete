@@ -255,7 +255,6 @@ function GBM(sigma,mu,n,T,s0,mean,prc95,prc05){
     for (i=0;i<T;i++){
         S[i]= [];
     }
-//console.log(S)
     
     for (i=0; i<T;i++){
         t[i] = i;
@@ -339,11 +338,8 @@ for (i=0;i<T2;i++){
 }
 for(i=1;i<T2;i++){
     M[i] = sal[i]*p + M[i-1] * Math.exp(mu2);
-    V[i] = V[i-1]*Math.exp(2*mu2)+(V[i-1]+Math.pow(M[i-1],2))*Math.exp(2*mu2)*(Math.exp(Math.pow(sigma2,2))-1);
-}
-
-for(i=1;i<T2;i++){
-    x05[i] = fractile(M[i],V[i],5);
+    V[i] = V[i-1]*Math.exp(2*mu2)+(V[i-1]+Math.pow(M[i-1],2))*Math.exp(2*mu2)*(Math.exp(Math.pow(sigma2,2))-1);     //Formeln som är beskriven i artikeln för att beräkna medelväde M och variation V
+    x05[i] = fractile(M[i],V[i],5);                                                                                 // x05 och x95 är även 90 precentilen i fördelningen.
     x95[i] = fractile(M[i],V[i],95);
 }
    var Vari = V[T2-1];
@@ -387,7 +383,6 @@ function fractile(m,v,p){
 
 //Plott functionen för att plotta linjediagrammen
 function plotfunc_3_lines_id(mean,x95,x05,T1,T2,maxval,color,id,xlabel,ylabel,title,svg_id){
-//function plotfunc(mean,x95,x05,T1,T2,maxval){
 //Plotting analythic solution
 var margin = {top: 50, right: 550, botton: 250, left: 300}
     , width = window.innerWidth - margin.left - margin.right    
@@ -683,9 +678,9 @@ function riskclass(M,mu,level,p){
         loss = 0.1;
     } else if (level==2){
         loss = 0.14;
-    } else if (level==3){
+    } else if (level==3){           // Här besäms hur mycket värdet får sjunka beroende på vilken riskklass som valts
         loss = 0.18;
-    } else if (level==4){
+    } else if (level==4){               
         loss = 0.22;
     } else if (level==5){
         loss = 0.26;
@@ -694,9 +689,9 @@ function riskclass(M,mu,level,p){
     }
 
     i = 0;
-    a = (x2_05[1]/mean2[0])<((1-loss)-0.001)
+    a = (x2_05[1]/mean2[0])<((1-loss)-0.001)        //kontroll för att se hur mycket värdet har sjunkit på ett år. Värdet ska ligga innanför (1-loss)+-0.001 annars justera sigma
     b = (x2_05[1]/mean2[0])<((1-loss)+0.001)
-    while (a || b){
+    while (a || b){                            
         //Den hoppar ut loopen efter 10000 itterationer
         if (i==10000){
             console.log("Riskklass LOOP Bruten")
@@ -1335,16 +1330,7 @@ var color = "rgb[150,150,20]"
 //plotfunc_3_lines_id(x2_95,x2_95,x2_95,timeS,timeP,Math.max.apply(null,x2_95),color,"#plot1","Age","Total acumulated savings(kr)","Savings vs Age for best case senario before retirement","plot1_id");
 plotfunc_3_lines_id(u2590,u2590,u2590,timeS,timeE-1,Math.max.apply(null,u2590),color,"#plot1","Ålder","Totala ackumilerade besparingar(kr)","Pensions besparingar över tiden (Bästa senariot)","plot1_id");
 Analythic
-/*
-var j=0;
-var GPH;
-var GPM;
-var GPL;
-for (i=T;i<T+T2-1;i++){
-    salaryvecH[i]=(salvecIPH[i-T]+salvecPPH[i-T])/12 + GPH + salvecTPH[i-T]/12;
-    GP[i]=GPM;
-    j=j-0.1;
-}*/
+
 plotfunc_3_lines_id(salaryvecH,salaryvecH,salaryvecH,timeS,timeE,Math.max.apply(null,salaryvec),color,"#plot3","Ålder","Lön/pension(kr)","Lön över tiden (Bästa senariot)","plot3_id");
 document.getElementById("BeforeP").innerHTML = "Här visualiseras det bästa senariot med 95% säkerhet. Det man kan se i figuren är att upp till pensionen betalar man in pengar som sedan efter pension betalas ut och därför minskar besparingarna vid 65  år ålder.";
 document.getElementById("pay").innerHTML = "Från figuren ovan kan man sedan räkna ut vad för pension en får i måndaden. Här är även garantipension inräknad om inkomstpenionen blir tillräkligt låg. Pensionen är "+parseInt(1000*(salaryvecH[T+1])/salaryvecH[T-1])/10 +"% av lönen innan pension";
@@ -1408,8 +1394,6 @@ var tot =  salvecIPM[t-39]/12+ salPPM[t]/12+ GPM+ salTPM[t]/12+ salPSM[t]/12;
     
 document.getElementById("pensionsdelar").innerHTML = "Till vänster kan du se ett tårt diagram. Tanken med tårtdiagramet är att visualisera hur månadsutbetalningarna från de olika pensionsdelarna förändras med tiden i procent. Det man kan se är att när inkomstpensionen minskar så ökar garantipensionen. Premiepensionen håller sig jämn över åren. Det beror på att delningstalet som används för att bäräkna utbetalningarna för premiepension räknas om varje år. Tjänste pensionen beror på hur du har betämt hur den ska tas ut. Av hela pensionen motsvarar avrundat till närmaste tiondel. <br/> IP: " + parseInt(1000*(salvecIPM[t-39]/12)/tot)/10 + "% PP: " +  parseInt(1000*(salPPM[t]/12)/tot)/10 + "% TP: " +  parseInt(1000*(salTPM[t]/12)/tot)/10 + "% PS: " +  parseInt(1000*(salPSM[t]/12)/tot)/10 + "% GP: " +  parseInt(1000*(GPM)/tot)/10+"%." 
 }
-//boxPlot(mean1,x1_95,x1_05,"#box");
-//plotting end 
 }
 
 var happy = 0;
