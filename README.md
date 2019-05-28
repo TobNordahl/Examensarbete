@@ -8,8 +8,8 @@ när pogrammet körs.
 ## Bra att veta
 Just nu plottas premiepension och tjänstepension i plotten som visualiserar de totala tillgångarna.</br>
 I plotten där man ser sin lön är Inkomstpension,Premiepension,Tjänstepension och garantipension inkluderat.</br>
-Det går att inkludera privat sparande om man söker i koden med "ctrl F" och letar efter "ok_ps". 0=Använd ej 1=Använd.</br>
-Det samma gäller tjänstepensionen. Vill man sänga av den kan man leta efter "ok" och sätta den till 0.</br>
+Det går att inkludera privat sparande på rad "1229" genom att sätta "ok_ps" till 0/1. 0=Använd ej 1=Använd.</br>
+Det samma gäller tjänstepensionen på rad "1203". Vill man sänga av den kan man leta efter "ok" och sätta den till 0.</br>
 ## Senaste versionen
 Den senaste verisonen är "Test_plot_ver23.html".</br>
 Jag har försökt att lägga till några vägledande kommentarer i koden för att underlätta läsningen. </br>
