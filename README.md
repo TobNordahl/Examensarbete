@@ -4,7 +4,9 @@ kunskap och intresse.
 ## Filer
 Huvudfilerna är Test_plot_vXX.html där XX representerar verisonen. Högre versionsnummer betyder senare version.</br>
 Test_plotvXX.html ska gå att köra uten att behöva ladda ner biblioteken d3 och jquerry, Test_plotvXX.html läser in d3 från deras hemsida 
-när pogrammet körs.
+när pogrammet körs.</br>
+d3.min.js är d3 biblioteket som används (den behövs ej laddas ner för att köra koden).</br>
+jquerry-3.3.1.js används inte längre.
 ## Bra att veta
 Just nu plottas premiepension och tjänstepension i plotten som visualiserar de totala tillgångarna.</br>
 I plotten där man ser sin lön är Inkomstpension,Premiepension,Tjänstepension och garantipension inkluderat.</br>
