@@ -16,3 +16,5 @@ Det samma gäller tjänstepensionen på rad "1203". Vill man sänga av den sätt
 Den senaste verisonen är "Test_plot_v23.html".</br>
 Jag har försökt att lägga till några vägledande kommentarer i koden för att underlätta läsningen. </br>
 I denna verison är även funktionen för att räka ut pensionen uppdaterad så resultatet ser mer realistiskt ut.
+## Kommande arbeten
+Just nu försöker jag skriva om koden så att den ska blir lättare och tydligare att förstå den kommer komma som varsion 24 när den är klar.
