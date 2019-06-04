@@ -817,12 +817,14 @@ function Analythic_ver2(sigma, mu, T0, T1, T2, sal, p, M, x95, x05, type, DT, sa
                 I = M[i-1]/DT;
                 IH = x95[i-1]/DT;
                 IL = x05[i-1]/DT;
-                DT = DT - 1;
+                //DT = DT - 1;
+                fill_salary_vector(salH, salM, salL, IH, I, IL, i);
                 if (M[i-1] - I > 0){            //Kontroll så inte tilgångarna blir negativa 
-                    fill_salary_vector(salH, salM, salL, IH, I, IL, i);
+                    DT = DT - 1;
+                    //fill_salary_vector(salH, salM, salL, IH, I, IL, i);
                     deposit_withdraw(M, V, x95, x05, mu2, sigma2, -I, DT, ARV, i);  
                 }else{                      //blir tilgångarna negativa nollas allt
-                    fill_salary_vector(salH, salM, salL, 0, 0, 0, i);
+                    //fill_salary_vector(salH, salM, salL, 0, 0, 0, i);
                     M[i] = 0;
                     V[i] = 0;
                     x05[i] = 0;
