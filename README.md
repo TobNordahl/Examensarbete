@@ -13,9 +13,9 @@ I plotten där man ser sin lön är Inkomstpension,Premiepension,Tjänstepension
 Det går att inkludera privat sparande på rad "1061" genom att sätta "enable_ps" till 0/1. 0=Använd ej 1=Använd.</br>
 Det samma gäller tjänstepensionen på rad "1037". Vill man sänga av den sätt "enable_TP" till 0.</br>
 ## Senaste versionen
-Den senaste verisonen är "Test_plot_v25.html".</br>
+Den senaste verisonen är "Test_plot_v26.html".</br>
 Jag har försökt att lägga till några vägledande kommentarer i koden för att underlätta läsningen. </br>
 I denna verison är även funktionen för att räka ut pensionen uppdaterad så resultatet ser mer realistiskt ut.
 Funktionerna ska även vara mer lättläsliga 
 ## Kommande arbeten
-Nästa version som kommer blir version 26 där är tanken att sidan ska fungera bättre när storleken på föstret ändras och även så jobbar ja på bättre läslig kod.
+Nästa version som kommer blir version 27 där är tanken att sidan ska fungera bättre när storleken på föstret ändras och även så jobbar ja på bättre läslig kod.
