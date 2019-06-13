@@ -1,0 +1,1657 @@
+
+<!doctype html>
+
+<meta charset=utf-8>
+<title>PLOTS</title>
+<!--<script src='d3/d3.min.js'></script>-->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<script src="jquery-3.3.1.js"></script>
+</head>
+<script>
+    d3.select('h3').style('color', 'darkblue');
+    d3.select('h3').style('font-size', '24px');
+</script>
+
+
+<html>
+<head>
+<body ></body>
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+    background-color: #FAFAF5;
+    margin-left: 200px;
+    margin-right: 200px;
+    height: 100%;
+}
+
+
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #ffab00;
+  cursor: pointer;
+}
+.area {
+    fill: #eaeaea;
+    opacity: 0.5;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+    h1{
+     color: #7600a2; 
+     font-family: "arial";
+     text-align: center;      
+    }
+    p{
+        color: #000;
+        font-family: "arial"
+    }
+    text{
+        color: #000;
+        font-family: "arial"
+    }
+    body{
+        font-family: "arial";
+        background: url(../Bilder/bakgrund1.jpg) right top repeat-y,url(../Bilder/bakgrund1.jpg) left top repeat-y;
+    }
+    svg{
+        background: "#fff"
+    }
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 50%;
+}
+.text_col {
+       -moz-column-count: 2;
+       -moz-column-gap: 20px;
+       -webkit-column-count: 2;
+       -webkit-column-gap: 20px;
+       font-weight: bold;
+}
+
+td, th {
+  border: 1px solid #000;
+  text-align: left;
+  padding: 2px;
+}
+.row{
+  display: flex;
+}
+.column {
+  flex: 50%;
+  padding: 2px;
+}
+
+</style>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <h1>PENSIONSPROJEKTION MED INFORMATION OM RISK</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+<p class="text_col">Under de senaste årtionden har det svenska pensionssystemets gått från att bestå i stort sett bara av garanterade produkter till att bestå mer och mer av icke-garanterade produkter. Icke-garanterade produkter kan låta läskigt men det är produkter som bär en risk(t.ex. aktier och fonder) med denna risk förjer en högre förväntad återbetalning. I den här artikeln kan du läsa om vad just din pension har för variation för att ge dig en ökad förståelse om vad pensionen består av. Du kan även experimentera själv med att göra dina egna prognoser baserat på dina nuvarande tillgånga och variera risken för att se hur olika risk nivåer påverkar spridningen över tiden. Vänligen följ med oss genom denna artikel så hoppas vi att ni har fått både en ökad förståelse men också intresse över din pension. HEJ!</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+<p>Genom att ta på sig risk så finns det en chans att tjäna mer pengar än vad man skulle gjort utan risk men man tar samtidigt på sig att bära risken att förlora pengar. Nedan kommer det visas olika plottar på hur man kan visualisera en pension. Bilderna visar ett medelvärde på vad enisonen blir men också en spridning på hur det kan gå. Genom att ändra riskklass med slidern nedan så kan man se hur spridningen på pensionen kommer variera. Det är värt att notera ju längre fram i framtiden man gör prognosen destå större blir spridningen.</p>
+<p>Darg i slidern för att välja en risk klass.</p>
+    </div>
+</div>
+
+<div class="slidecontainer">
+  <input type="range" min="1" max="5" value ="1"  class="slider" id="myRange" onclick="main(4)">
+  <p>Risk klass: <span id="demo"></span></p>
+</div>
+<div class="row">
+    <div class="col-md-6" id="piechartplot">
+    </div>
+    <div class="col-md-6" style="margin-top: 75px">
+    <table>
+      <tr>
+        <th></th>
+        <th>1 år</th>
+        <th>5 år</th>
+        <th>15 år</th>
+      </tr>
+      <tr>
+        <th>Hög</th>
+        <th><p id="high1"></p></th>
+        <th><p id="high5"></p></th>
+        <th><p id="high15"></p></th>
+      </tr>
+      <tr>
+        <th>Medel</th>
+        <th><p id="mean1"></p></th>
+        <th><p id="mean5"></p></th>
+        <th><p id="mean15"></p></th>
+      </tr>
+      <tr>
+        <th>Låg</th>
+        <th><p id="low1"></p></th>
+        <th><p id="low5"></p></th>
+        <th><p id="low15"></p></th>
+      </tr>
+    </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p>Tårtdiagramet visar vad de totala pensions besparingarna består av och hur stor del av de totala besparingarna varje pensions typ består av året innen pension. Detta för att ge en förståelse för hur det kan se ut. Gemon att variera riskklass så kommer de högsta och lägsta utfall att variera och det kan man noteara i tårtdiagrammet. Tårtdiagrammet visar inge summor utan bara delar så för att se mer om hur summorna i ensionen kan variera var god fortsätt att skrilla ner.</p>
+    </div>
+</div>
+    
+
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+</script>
+
+</body>
+</html>
+
+<!-- Create a div where the graph will take place -->
+<style type="text/css">
+/* 13. Basic Styling with CSS */
+
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: #b600c7;
+    stroke-width: 1;
+}
+  
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+  
+.focus circle {
+  fill: none;
+  stroke: #b600c7;
+}
+
+.area {
+    fill: rgba(212, 2, 195, 0.52);
+    stroke-width: 0;
+}
+textarea {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 10px;
+    outline: 0;
+}
+.button{
+  background-color: orange;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.tooltip {                                                        /* NEW */
+        background: #eee;                                               /* NEW */
+        box-shadow: 0 0 5px #999999;                                    /* NEW */
+        color: #333;                                                    /* NEW */
+        display: none;                                                  /* NEW */
+        font-size: 12px;                                                /* NEW */
+        left: 130px;                                                    /* NEW */
+        padding: 10px;                                                  /* NEW */
+        position: absolute;                                             /* NEW */
+        text-align: center;                                             /* NEW */
+        top: 95px;                                                      /* NEW */
+        width: 80px;                                                    /* NEW */
+        z-index: 10;                                                    /* NEW */
+      } 
+
+</style>
+<svg>
+</svg>
+<p style="font-size:15px", id="resultsh"></p>
+<p style="font-size:15px", id="resultsm"></p>
+<p style="font-size:15px", id="resultsl"></p>
+<!-- Body tag is where we will append our SVG and SVG objects-->
+<body>
+</body>
+
+<script>
+
+//function for calculating gmb solution, denna function användes främs i början av projectet och inte längre.
+function GBM(sigma,mu,n,T,s0,medelUtfall, prc95,prc05){
+    var T = T;
+    var t = [];
+    var samples = [];
+    var i;
+    var Smax; 
+    var mu = mu;
+    var sigma = sigma;
+    var n = n;
+    var S = [];
+    var sTest = [];
+    for (i=0;i<T;i++){
+        S[i]= [];
+    }
+    
+    for (i=0; i<T;i++){
+        t[i] = i;
+    }
+
+    var SmaxGlob = s0;
+    var j;
+    for (j=0;j<n;j++){
+        S[0][j]=s0;
+    }
+    sTest[0]=s0;
+    for (j=0;j<n;j++){
+        //var S = [];
+        var dt = t[T-1]-t[T-2];
+        Smax = S[0][j];
+
+        samples[0]=(Math.random()*2-1); //sample from normal distribution medelUtfall= 0 std=sqrt(dt)
+        for (i=1; i<T;i++){
+            // Take a random sample using inverse transform sampling method.
+            sample =(Math.random()*2-1);
+            samples[i]=sample;
+            //S[i] = S[i-1]*Math.exp((mu-(sigma^2)/2)*dt+sigma*sample);
+            S[i][j] = S[i-1][j] + mu*S[i-i][j]*dt+sigma*S[i-1][j]*Math.sqrt(dt)*sample;
+            sTest[i] = sTest[i-1] + mu*sTest[i-1]*dt+sigma*sTest[i-1]*Math.sqrt(dt)*sample;
+            if (S[i][j]>Smax){
+                Smax=S[i][j];
+            }
+        }
+    }
+    var sStat = [];
+    var help = [];
+    for (i=0;i<T;i++){
+        sStat[i]= [];
+    }
+    for (j=0;j<n;j++){
+        for ( i=0;i<T;i++){
+            sStat[i][j]=S[i][j];
+        }
+    }
+    for (i=0;i<T;i++){
+        for (j=0;j<n;j++){
+            help[j]=sStat[i][j];
+        }
+        help.sort(function(a, b){return a - b});
+        for (j=0;j<n;j++){
+            sStat[i][j]=help[j];
+        }
+    }
+    var sum;
+    for (i=0; i<T; i++){
+        //sStat.sort();
+        prc95[i] = sStat[i][(n/100)*95];
+        prc05[i] = sStat[i][(n/100)*5];
+        sum=0;
+        for(j=0;j<n;j++){
+            sum = sum + sStat[i][j];
+        }
+        medelUtfall[ i] = sum/n;
+    }
+    return medelUtfall, prc95,prc05;
+}
+
+//function for calculate analythic solution, denna function används bara av inkomstpensionen öfr de andra pensionstyperna används Analythic_ver2
+function Analythic(sigma, mu,T,sal,p,M,högtUtfall,lågtUtfall){
+var T2 = T;
+var t2 = [];
+//var M = [];
+var V = [];
+var mu2 = mu;
+var sigma2 = sigma;
+//var högtUtfall = [];
+//var lågtUtfall = [];
+var I; 
+M[0] = sal[0]*p;
+V[0] = 0;
+lågtUtfall[0] = M[0];
+högtUtfall[0] = M[0];
+var i; 
+for (i=0;i<T2;i++){
+    t2[i] = i;
+}
+for(i=1;i<T2;i++){
+    M[i] = sal[i]*p + M[i-1] * Math.exp(mu2);
+    V[i] = V[i-1]*Math.exp(2*mu2)+(V[i-1]+Math.pow(M[i-1],2))*Math.exp(2*mu2)*(Math.exp(Math.pow(sigma2,2))-1);     //Formeln som är beskriven i artikeln för att beräkna medelväde M och variation V
+    lågtUtfall[i] = fractile(M[i],V[i],5);                                                                                 // lågtUtfall och högtUtfall är även 90 precentilen i fördelningen.
+    högtUtfall[i] = fractile(M[i],V[i],95);
+}
+   var Vari = V[T2-1];
+   return Vari;
+}
+
+//funtion to generate random numbers
+function randn_bm() {
+    var u = 0, v = 0;
+    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+    while(v === 0) v = Math.random();
+    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+}
+    
+//precentile function m = medelUtfall,  v=variance, p = precentile
+function fractile(m,v,p){
+    var a;
+    var b;
+    var Nvec = [];
+    var N;
+    var x;
+    var i;
+    if (p==95){
+        N = 1.645;
+    }else if (p==5){
+        N = -1.645;
+    }else{
+        for (i=0;i<1000;i++){
+            Nvec[i] = randn_bm();
+        }
+        Nvec.sort(function(a, b){return a - b});
+        N = Nvec[p*10]; 
+    }
+    a = Math.log(m);
+    b = Math.sqrt(Math.log(1+v*Math.exp(-2*a)));
+    //x = Math.exp(b*N+a-(1/2)*b*2);
+    x = Math.exp(b*N+a-(1/2)*Math.pow(b,2));
+    return x; 
+}
+  
+function createDataset(dataset, dataset95, dataset05, medelUtfall,  högtUtfall, lågtUtfall, n1, n0){
+    var K;
+    for (k=0;k<n0;k++){
+        dataset[k] = {"x": k+n1, "y": medelUtfall[ k]};
+        dataset95[k] = {"x": k+n1, "y": högtUtfall[k]};
+        dataset05[k] = {"x": k+n1, "y": lågtUtfall[k]};
+    }
+}
+
+function createSVG(id, svg_id, margin){
+    svg = d3.select(id).append("svg")
+    .attr("viewBox", "0 0 900 650") 
+    .style("fill", "black")
+    .attr("id",svg_id)
+  .append("g")
+    .attr("transform", "translate(" + 100 + "," + margin.top/1.2 + ")");
+    
+    return svg;
+}
+
+function lineGenerator(dataset, line, color){
+    svg.append("path")
+        .datum(dataset) //binds data to the line
+        .attr("class", "line") //class for styling
+        .attr("d", line) // calls line generator
+        .style("stroke", color );
+}
+function textGenerator(width, height, angle, label, font, dy , pos , className, decoration){
+    svg.append("text")
+    .attr("class", className)
+    .attr("x", width)
+    .attr("y", height)
+    .attr("transform", "rotate(" + angle + ")")
+    .attr("text-anchor", pos)
+    .attr("dy", dy)
+    .style("font-size", font) 
+    .style("text-decoration", decoration)  
+    .text(label);
+}
+
+function mouseGenerator(width, height, radius){
+    var focus = svg.append("g")
+    .attr("class", "focus")
+    .style("display", "none");
+    focus.append("line")
+    .attr("class", "x-hover-line hover-line")
+    .attr("y1", 0)
+    .attr("y2", height);
+    focus.append("line")
+    .attr("class", "y-hover-line hover-line")
+    .attr("x1", width)
+    .attr("x2", width);
+    focus.append("circle")
+    .attr("r", radius);
+    focus.append("text")
+    .attr("x", 15)
+  	.attr("dy", ".31em");
+    
+    return focus
+}
+
+function mouseMove(dataset, width, height, x0, xScale, yScale, focus){
+
+  var  i = bisectDate(dataset, x0, 1),
+    d0 = dataset[i - 1],
+    d1 = dataset[i],
+    d = x0 - d0.x > d1.x - x0 ? d1 : d0;
+
+    //console.log(i)
+    focus.attr("transform", "translate(" + xScale(d.x) + "," + yScale(d.y) + ")");
+    focus.select("text").text(function() { return (parseInt(d.y/10)*10).toLocaleString(); });
+    focus.select(".x-hover-line").attr("y2", height - yScale(d.y));
+    focus.select(".y-hover-line").attr("x2", width+width);
+}
+//Plott functionen för att plotta linjediagrammen
+function plotFunction(medelUtfall, högtUtfall, lågtUtfall, T1, T2, maxval, color, id, xlabel, ylabel, title, svg_id){
+    //Plotting analythic solution
+    var margin = {top: 50, right: 550, botton: 250, left: 300}
+        , width = window.innerWidth - margin.left - margin.right    
+        , height = window.innerHeight - margin.top - margin.botton;
+        
+    var n = T2-T1;  //Number of datapoints
+    var Tvec = [];
+    for (var i=0;i<=n;i++){
+        Tvec[i]=i+T1;
+    }
+    // x scale
+    var xScale = d3.scaleLinear()
+        .domain([T1, T2-1])  //input
+        .range([0, width]);
+        
+    // y scale
+    var yScale = d3.scaleLinear()
+        .domain([0, maxval]) // input
+        .range([height, 0]);
+        
+    // d3 line generator
+    var line = d3.line()
+        .x(function(d, i) { return xScale(d.x); }) //set x values
+        .y(function(d) { return yScale(d.y); }) // set y values
+        
+    // d3 line generator
+    var line95 = d3.line()
+        .x(function(d, i) { return xScale(d.x); }) //set x values
+        .y(function(d) { return yScale(d.y); }) // set y values
+        
+    // d3 line generator
+    var line05 = d3.line()
+        .x(function(d, i) { return xScale(d.x); }) //set x values
+        .y(function(d) { return yScale(d.y); }) // set y values
+
+    var dataset = [];
+    var dataset95 = [];
+    var dataset05 = [];
+
+    //fill dataset object with data  dataset[{y: time, x: value}]
+    createDataset(dataset, dataset95, dataset05, medelUtfall,  högtUtfall, lågtUtfall,T1,n);
+
+    // add svg to page and use margin converter
+    svg = createSVG(id, svg_id, margin);
+
+
+    if (högtUtfall[n-1]!=lågtUtfall[n-1]){
+        var data = [ {x:[],y:[]} , {x:[],y:[]} ];
+        for(k=0;k<n;k++){
+            data[0].x[k]=k+T1;
+            data[0].y[k]=högtUtfall[k];
+            data[1].x[k]=k+T1;
+            data[1].y[k]=lågtUtfall[k];
+        }
+        var indexes = d3.range( data[0].x.length );
+
+        var area = d3.area()
+                        .x0( function(d) { return xScale(data[1].x[d]) } )
+                        .x1( function(d) { return xScale(data[0].x[d]) } )
+                        .y0( function(d) { return yScale(data[1].y[d]) } )
+                        .y1( function(d) { return yScale(data[0].y[d]) } );
+        svg.append("path")
+        .datum(indexes)
+        .attr("class", "area")
+        .attr("d", area)
+        
+    }    
+
+    // call x axis in group tag
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale));
+
+    //call y axis in group tag
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(yScale));
+
+    //Append path, bind data, and call the line generator
+    lineGenerator(dataset, line, color);
+    lineGenerator(dataset95, line95, color);
+    lineGenerator(dataset05, line05, color);
+
+    //(width, height, angle, label, font, dy , pos , className, decoration){
+    textGenerator(width, height-6, 0, xlabel, "", "", "end", "x label", "")
+    textGenerator("", 6, -90, ylabel, "", ".75em", "end", "y label", "")
+    textGenerator((width / 2) ,  0 - (margin.top / 2), 0, title, "16px", "", "middle", "", "underline")
+
+
+    //Adding first mouse over effects
+    var focus = mouseGenerator(width, height, 7.5)
+    var focusH = mouseGenerator(width, height, 7.5)
+    var focusL = mouseGenerator(width, height, 7.5)
+
+
+    svg.append("rect")
+        .attr("transform", "translate(" + 0 + "," + 0 + ")")
+        .attr("class", "overlay")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", function() { focus.style("display", null); 
+                                    focusH.style("display", null);
+                                    focusL.style("display", null);})
+        
+        .on("mouseout", function() { focus.style("display", "none");
+                                    focusH.style("display", "none");
+                                focusL.style("display", "none");})
+        
+        .on("mousemove", mousemove)
+        
+        
+    var parseTime = d3.timeParse("%Y")
+        bisectDate = d3.bisector(function(d) { return d.x; }).left;
+
+    //Function läsa position på musen och skriva ut tooltip
+    function mousemove(){
+        var x0 = xScale.invert(d3.mouse(this)[0])
+        mouseMove(dataset, width, height, x0, xScale, yScale, focus)
+        mouseMove(dataset95, width, height, x0, xScale, yScale, focusH)
+        mouseMove(dataset05, width, height, x0, xScale, yScale, focusL)
+    }
+
+}
+
+function linesAndLabel(data_ready, svg, arc, outerArc, radius, sum){
+    svg
+  .selectAll('allPolylines')
+  .data(data_ready)
+  .enter()
+  .append('polyline')
+    .attr("stroke", "black")
+    .style("fill", "none")
+    .attr("stroke-width", 1)
+    .attr('points', function(d) {if (d.data.value!=0){
+      var posA = arc.centroid(d) // line insertion in the slice
+      var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+      var posC = outerArc.centroid(d); // Label position = almost the same as posB
+      var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+      posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+      return [posA, posB, posC]
+    }})
+
+// Add the polylines between chart and labels:
+svg
+  .selectAll('allLabels')
+  .data(data_ready)
+  .enter()
+  .append('text')
+    .text( function(d) {if (d.data.value!=0){  console.log(d.data.key) ; return d.data.key+": "+
+    parseInt(1000*(d.data.value/sum))/10+"%" }} )
+    .attr('transform', function(d) {if (d.data.value!=0){
+        var pos = outerArc.centroid(d);
+        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+        return 'translate(' + pos + ')';
+    }})
+    .style('text-anchor', function(d) {if (d.data.value!=0){
+        var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        return (midangle < Math.PI ? 'start' : 'end')
+    }})
+}
+
+//Function för att plotta tårtdiagrammen men specifierar datan, och id på den div och svg man vill plotta i
+function piechart(data,id,div){
+var sum = data.IP + data.PP + data.TP + data.PS + data.GP;
+//set dimensions of pie
+var width = 300
+    height = 300
+    margin = 80;
+
+// The radius of the pieplot is half the width or half the height (smallest one). I substract a bit of margin.
+var radius = Math.min(width, height) / 2 - margin
+
+// append the svg object to the div called 'my_dataviz'
+
+var svg = d3.select(div)
+  .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("id",id)
+    //.style("background-color", 'blue')
+  .append("g")
+    .attr("transform", "translate(" + (width) / 2 + "," + (height) / 2 + ")");
+svg.append("g")
+    .attr("class", "labels");
+svg.append("g")
+    .attr("class", "lines");
+
+// set the color scale
+var color = d3.scaleOrdinal()
+  .domain(["IP", "PP","GP" ,"TP", "PS"])
+  //.domain(data)
+  .range(["#ff0000","#ffab00","#909090","#006cff","#4fbc2e"])
+  //.range(d3.schemeDark2);
+  
+ 
+ // Compute the position of each group on the pie:
+  var pie = d3.pie()
+    .value(function(d) {return d.value; })
+    .sort(function(a, b) { return d3.ascending(a.key, b.key);} ) //
+     
+    //.sort(function(a, b) { console.log(a) ; return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
+  var data_ready = pie(d3.entries(data))
+
+
+  // map to data
+  var u = svg.selectAll("mySlices")
+    .data(data_ready)
+
+  var arc = d3.arc()
+    .innerRadius(radius)
+    .outerRadius(20);
+
+var outerArc = d3.arc()
+	.innerRadius(radius * 0.9)
+	.outerRadius(radius * 0.9);
+
+  // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+  u
+    .enter()
+    .append('path')
+    .merge(u)
+    .transition()
+    .duration(1000)
+    .attr('d', arc)
+    .attr('fill', function(d){ return(color(d.data.key)) })
+    .attr("stroke", "white")
+    .style("stroke-width", "2px")
+    .style("opacity", 1)      
+
+    //Göra linjer och labels till piechart
+    linesAndLabel(data_ready, svg, arc, outerArc, radius, sum)
+
+  // remove the group that is not present anymore
+  u
+    .exit()
+    .remove()
+    
+
+}
+
+function determine_loss(level){
+    var loss;
+    if (level == 1){
+        loss = 0.1;
+    } else if (level == 2){
+        loss = 0.14;
+    } else if (level == 3){           // Här besäms hur mycket värdet får sjunka beroende på vilken riskklass som valts
+        loss = 0.18;
+    } else if (level == 4){               
+        loss = 0.22;
+    } else if (level == 5){
+        loss = 0.26;
+    } else{
+        loss = 0;
+    }
+    return loss;
+}
+
+function adjust_sigma(a, sigma){
+    if ( a ){
+        sigma = sigma - 0.01;
+    } else{
+        sigma = sigma + 0.01;
+    }
+    return sigma;   
+}
+    
+function optimize_sigma(sigma, T, Mtemp, p, mean2, x2_95, x2_05, loss){
+    var i = 0;
+    var a = (x2_05[1]/mean2[0]) < ((1-loss)-0.001)        //kontroll för att se hur mycket värdet har sjunkit på ett år. Värdet ska ligga innanför (1-loss)+-0.001 annars justera sigma
+    var b = (x2_05[1]/mean2[0]) < ((1-loss)+0.001)
+    while (a || b){                            
+        //Den hoppar ut loopen efter 10000 itterationer
+        if (i == 10000){
+            console.log("Riskklass LOOP Bruten")
+            return;
+        }
+        sigma = adjust_sigma(a,sigma);
+        Analythic(sigma, 0, T, Mtemp, p, mean2, x2_95, x2_05);
+        a = (x2_05[1]/mean2[0]) < ((1-loss)-0.001)
+        b = (x2_05[1]/mean2[0]) < ((1-loss)+0.001)
+        i++
+    }
+    return sigma;
+}
+    
+//Denna function används för att anpassa volaliteten(sigma) så att den stämmer in med riskklassen. Level=riskklass M=datavector mu=avkastning, p=ange hur str del av M som ska användas när man kallar på Analythic()
+function riskclass(M, mu, level, p){
+    var loss;
+    var sigma = 0.15; // start guess
+    var T = 2;
+    //var mu = 0.01;
+    var i;
+    var Mtemp = [];
+    Mtemp[0] = M[0];
+    for (i = 1; i < M.length; i++){
+        Mtemp[i] = 0;
+    }
+    var s0 = Mtemp[0];
+    var mean2 = [];
+    var x2_95 = [];
+    var x2_05 = [];
+    
+    Analythic(sigma, 0, T, Mtemp, p, mean2, x2_95, x2_05);
+    loss = determine_loss(level)    // Här besäms hur mycket värdet får sjunka beroende på vilken riskklass som valts
+    
+    sigma = optimize_sigma(sigma, T, Mtemp, p, mean2, x2_95, x2_05,loss)  //Justering av sigma
+
+    return sigma;
+}
+    
+//Här räknas utbetalningarna för inkomstpension ut (Skas eventuellt tag bort)
+function utbetalningIP(T1,T2,M0,DT) {
+    var t = T2-T1;
+    var salvec = [];
+    //år [61-105]
+    var i;
+    var förskottsRänta = 1.016
+    var I = M0/DT;
+    salvec[0] = I;
+    for(i=1; i < t; i++){
+        I = I/förskottsRänta;
+        salvec[i] = I;    
+    }
+       //return M,V,högtUtfall,lågtUtfall,salvec
+    return salvec
+}
+
+function utbetalningGP(prisBasBelopp,sal){
+    sal = (sal/16)*18.5;
+    var sal_belopp = sal/prisBasBelopp;
+    var GP;
+    if (sal > 1.26*prisBasBelopp){
+    GP = (0.87 - (sal_belopp - 1.26)*0.48)*prisBasBelopp;
+    if (GP < 0){
+        GP = 0;
+    }
+    }
+    else{
+        GP = (2.13*prisBasBelopp) - sal;
+    }
+    return GP
+}
+
+
+function variance(M,V,mu,sigma,DT,ARV){
+    V = V*Math.pow(Math.exp(ARV + mu) - 1/DT, 2) + (V + Math.pow(M, 2))*Math.exp(2*mu + 2*ARV)*(Math.exp(Math.pow(sigma, 2)) -1); 
+    return V;
+}
+
+function expectedValue(M,mu,I,ARV){
+    M = I + M * Math.exp(mu + ARV);
+    return M;
+}
+    
+function deposit_withdraw(M, V, högtUtfall, lågtUtfall, mu2, sigma2, I, DT, ARV, i){
+    M[i] = expectedValue(M[i-1], mu2, I, ARV);
+    V[i] = variance(M[i-1], V[i-1], mu2, sigma2, DT, ARV);
+    lågtUtfall[i] = fractile(M[i], V[i], 5);
+    högtUtfall[i] = fractile(M[i], V[i], 95);
+}
+
+function fill_salary_vector(salH, salM, salL, valH, valM, valL, i){
+    salH[i] = valH;
+    salM[i] = valM;
+    salL[i] = valL;
+}
+
+function tjänstepenisons_omräkning(sal, DT, type, T0, T1, T2){
+    if (type!=1){
+        sum = 0;
+        var TA = T2 - T0;
+        var TB = T1 - T0;
+        var i;
+        for (i=TB; i<TA; i++){
+            sum = sum + sal[i];
+        }
+        var omräknadPension = sum/DT;
+        for  (i=TB; i<(TB+DT); i++){
+            sal[i]=omräknadPension;
+        }
+        console.log("DELNINGSTAL TEST: "+DT)
+    }
+    return;
+}
+//Här räknas PP,TP,PS ut från året man börjar jobba tills det året all pension ska vara uttagen (25-90 är default)
+//DTvec är delningstalen för PP och DT är delningstalet för TP,PS
+//type==1->PP type==2->TP/PS
+function Analythic_ver2(sigma, mu, T0, T1, T2, sal, p, M, högtUtfall, lågtUtfall, type, DT, salH, salM, salL){
+    var TA = T2 - T0;
+    var TB = T1 - T0;
+    var helpDT = DT;
+    var V = [];
+    var mu2 = mu;
+    var sigma2 = sigma;
+    var ARV = 0.000273;
+    var I;
+    var IH;
+    var IL;
+    M[0] = sal[0]*p;
+    V[0] = 0;
+    lågtUtfall[0] = M[0];
+    högtUtfall[0] = M[0];
+    fill_salary_vector(salH, salM, salL, sal[0]*p, sal[0]*p, sal[0]*p, 0)
+    var DTvec = [23.17,	22.61,	22.03,	21.46,	20.87,	20.29,	19.69,	19.09,	18.49,	17.88,	17.26,	16.64,	16.01,	15.38,	14.75,	14.11,	13.47,	12.83,	12.18,	11.54,	10.9,	10.26,	9.62,	8.99,	8.38,	7.78,	7.19,	6.63,	6.09,	5.57,	5.09,	4.63,	4.21,	3.82,	3.47,	3.15,	2.87,	2.63,	2.43,	2.24,	2.05,	1.83,	1.55,	1.15,	0.54];
+    var i; 
+    for(i = 1; i < TA; i++){
+        if (i < TB){     //inbetalning fram till pension räknas ut på samma sätt för de tre olika typerna
+            fill_salary_vector(salH, salM, salL, sal[i]*p, sal[i]*p, sal[i]*p, i);
+            deposit_withdraw(M, V, högtUtfall, lågtUtfall, mu2, sigma2, sal[i]*p, 99999, 0, i);
+        }else{
+            if(type == 1){               //Det är utbetalnig för PP som ska räknas
+                I = M[i-1]/DTvec[i-TB+3];
+                IH = högtUtfall[i-1]/DTvec[i-TB+3];
+                IL = lågtUtfall[i-1]/DTvec[i-TB+3];
+                fill_salary_vector(salH, salM, salL, IH, I, IL, i);
+                deposit_withdraw(M, V, högtUtfall, lågtUtfall, mu2, sigma2, -I, DTvec[i-TB+3], ARV, i);       
+            }else{                       //Det är utbetalnig för TP,PS som ska räknas
+                I = M[i-1]/DT;
+                IH = högtUtfall[i-1]/DT;
+                IL = lågtUtfall[i-1]/DT;
+                fill_salary_vector(salH, salM, salL, IH, I, IL, i);
+                if (M[i-1] - I > 0){            //Kontroll så inte tilgångarna blir negativa 
+                    deposit_withdraw(M, V, högtUtfall, lågtUtfall, mu2, sigma2, -I, DT, ARV, i);
+                    DT = DT - 1;
+                }else{                      //blir tilgångarna negativa nollas allt
+                    M[i] = 0;
+                    V[i] = 0;
+                    lågtUtfall[i] = 0;
+                    högtUtfall[i] = 0;
+                }
+            }
+        }
+    }
+    //Om man vill slå ut pensionen så att den inte stiger med åren
+    tjänstepenisons_omräkning(salM, helpDT, type, T0, T1, T2);
+    tjänstepenisons_omräkning(salH, helpDT, type, T0, T1, T2);
+    tjänstepenisons_omräkning(salL, helpDT, type, T0, T1, T2);
+    return ;
+}
+
+</script>
+
+<body text = "black">
+<div class="row">
+    <div class="col-md-12" >  
+        <p>
+            För att fortsätta diskussionen runt ämnet risk så ska vi prata investerings strategier och härleda det till riskklass. En agressiv strategi kan vara att vid t.ex. 25 års ålder så består pension av bara riskfyllda tillgångar(aktier för enkelhetens skull) men sedan vid 45 års ålder så byter man ut akriter mot mindre riskfylda tillgångar(t.ex. räntepapper)kanske 50/50 aktier/räntepapper man skulle kunna säga att över åren har man gått från riskklass 5 till 3. En försiktig strategi sklle vara att kanske gå från riskklass 4 till 1. Under de första åren kan det vara fördelaktigt att bära en större risk av två anledningar. 1. högra förväntad återbetalning. 2. Tiden till pension är väldigt lång så om en börskrass skulle hända finns det tid till återhämtning. När börsen krachade år 2008 så tog det bara två år för den att återhämta sig (dvs att indexet var tillbaka till samma index innan krachen). De olika riskklasserna man kan väja mellan med slidern ovan defineras som i tebellen nedan där man säger att för t.ex. risk klass 1 så kan värdet på tillgångarna minska med bara 10% under ett år och detta med en 95% säkerhet. 
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+    Time to start working: <input type="text" id="Times" value="time start work">
+    <br />
+    Time to start pension: <input type="text" id="Timep" value="time start pension">
+    <br />
+    Time to stop pension: <input type="text" id="Timee" value="time stop pension">
+    <br />
+    Payment: <input type="text" id="Payment" value="pay">
+    <br />
+    Initial data: <input type="text" id="initial" value="Initial data">
+    <br />
+    Löne tillväxt: <input type="text" id="lönetillväxt" value="tillväxt">
+    <br/>
+    Tjänstepension utagsperiod: <input type="text" id="tjänstepension" value="Uttags period">
+    <br/>
+    Privat sparande utagsperiod: <input type="text" id="privatsparande" value="Uttags period">
+    </div>
+    <div class="col-md-6">
+    <table>
+        <caption>Risk klassen i slidern högst upp är definerad enligt riskklasserna i denna tabell.</caption>
+      <tr>
+        <th>Risk klass</th>
+        <th>värdet kan inte sjunka med ...% på ett år med 95% sannolikhet</th>
+      </tr>
+      <tr>
+        <th>5</th>
+        <th>26%</th>
+      </tr>
+      <tr>
+        <th>4</th>
+        <th>22%</th>
+      </tr>
+      <tr>
+        <th>3</th>
+        <th>18%</th>
+      </tr>
+      <tr>
+        <th>2</th>
+        <th>14%</th>
+      </tr>
+      <tr>
+        <th>1</th>
+        <th>10%</th>
+      </tr>
+    </table>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="3" value="3" onclick="main(this.value)">HIGH </button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px"  id="2" value="2" onclick="main(this.value)">AVERAGE</button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="1" value="1" onclick="main(this.value)">LOW</button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="4" value="4" onclick="main(this.value)">ALL</button>
+    </div>
+</div>
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+//var val = 4;
+
+function main(id)
+{
+    //var originalState = $("#plot1").html();
+    //$("#plot1").html(originalState);
+    var plotnr = parseFloat(id);
+    val = plotnr;
+    var svg1;
+    d3.select("#plot1_id").remove();
+    d3.select("#plot2_id").remove();        //SVG:s tas bort och plottas om.
+    d3.select("#plot3_id").remove();
+    d3.select("#pie").remove();
+    var vola = parseFloat(slider.value)
+    var timeS = parseFloat(document.getElementById("Times").value);
+    var timeP = parseFloat(document.getElementById("Timep").value);             //Värden sätts av användaren. Om inte värden sätts antags default värden nedan.
+    var timeE = parseFloat(document.getElementById("Timee").value);
+    var yearly_salary = parseFloat(document.getElementById("Payment").value);
+    var init = parseFloat(document.getElementById("initial").value);
+    var salarygrowth = parseFloat(document.getElementById("lönetillväxt").value);
+    var prisBasBelopp = 3875;
+    var GP = [];
+    if (Number.isNaN(timeS)){
+        timeS = 25;
+    }
+    if (Number.isNaN(timeP)){
+        timeP = 64;
+    }
+    if (Number.isNaN(timeE)){
+        timeE = 90;
+    }
+    if (Number.isNaN(yearly_salary)){
+        yearly_salary = 31000*12;
+    }
+    if (Number.isNaN(init)){
+        init = 31000*12;
+    }
+    if (Number.isNaN(salarygrowth)){
+        salarygrowth = 0;
+    }
+    vola = vola;
+    var T = (timeP - timeS);
+    var T2 = (timeE - timeP) + 1;
+    var sigma = vola;
+    var mu = 0.0;
+    var n = 100;
+    var s0 = 100;
+    var PP = yearly_salary*0.025*(17.21/18.5);
+    var IP = yearly_salary*0.16*(17.21/18.5);
+    var ps_rate = 0.01;
+    console.log("To PP:" + PP + "and to IP:" + IP);
+
+    var salaryvec = [];
+    var salaryvecH = [];
+    var salaryvecL = [];
+    var pay_vector = [];
+
+
+    // här specifieras de olika avkastningarna för de olika pensionstyperna 
+    var returnPP = 0.021;
+    var returnTP = 0.021;
+    var returnPS = 0.021;
+    var skatt = 0.28;
+    var enable_PS = 1;
+    var enable_TP =1;
+
+    fill_salary_vector(salaryvec, salaryvecH, salaryvecL, yearly_salary/12, yearly_salary/12, yearly_salary/12, 0)
+    for (i = 1; i < T; i++){
+        salaryvec[i] = salaryvec[i-1]*(1 + salarygrowth);
+        salaryvecH[i] = salaryvec[i];
+        salaryvecL[i] = salaryvec[i];
+    }
+
+    console.log("Slutlön = " + salaryvec[T-1])
+
+    var sigma = riskclass(salaryvec, mu, vola, 0.025*(17.21/18.5));  
+    var sigmaU = 0.1;
+
+    // Delningstal för de olika pensions typerna delningstalet för PP ligger i en vector i functionen analythic_ver2() 
+    var DTPP = 20.9;
+    var DTIP = 19.55
+    var DTTP = parseFloat(document.getElementById("tjänstepension").value);
+    var DTPS = parseFloat(document.getElementById("privatsparande").value);
+    if (Number.isNaN(DTTP)){
+        DTTP = T2;
+    }
+    if (Number.isNaN(DTPS)){
+        DTPS = T2;
+    }
+
+    var TPM = [];
+    var TPH = [];
+    var TPL = [];
+
+    var PSM = [];
+    var PSH = [];
+    var PSL = [];
+
+    var totMedel = [];
+    var totHög = [];
+    var totLåg = [];
+
+    var PPM = [];
+    var PPH = [];
+    var PPL = [];
+
+    var IPM = [];
+    var IPH = [];
+    var IPL = [];
+
+    var variIP;
+
+    var AP7 = 0;
+    if (AP7 == 1){
+        sigma = 0.14;
+    }
+
+    console.log("Risk = "+sigma)
+    var TP;
+    var salTPH = [];
+    var salTPM = [];
+    var salTPL = [];
+
+    if (enable_TP == 1){
+        if (yearly_salary <= 40250){
+            TP = yearly_salary*0.04*0.27;
+        }else{
+            var payment1 = 40250;
+            var payment2 = yearly_salary - payment1;
+            TP = payment1*0.04 + payment2*0.3;
+        }
+       Analythic_ver2(sigma, returnTP, timeS, timeP, timeE, salaryvec, 0.04*12, TPM, TPH, TPL, 2, DTTP, salTPH, salTPM, salTPL);
+    }else{
+        for (i = 0; i < timeE-timeS; i++){
+            TP = 0;
+            TPM[i] = 0;
+            TPH[i] = 0;
+            TPL[i] = 0;
+            salTPH[i] = 0;
+            salTPM[i] = 0;
+            salTPL[i] = 0;
+        }    
+    }
+    var salPSH = [];
+    var salPSM = [];
+    var salPSL = [];
+
+    if (enable_PS == 1){
+        Analythic_ver2(sigma, returnTP, timeS, timeP, timeE, salaryvec, ps_rate*0.67*12, PSM, PSH, PSL, 2, DTPS, salPSH, salPSM, salPSL);
+    }else{
+        for (i = 0; i < timeE-timeS; i++){
+            PSM[i] = 0;
+            PSH[i] = 0;
+            PSL[i] = 0;
+            salPSH[i] = 0;
+            salPSM[i] = 0;
+            salPSL[i] = 0;
+        }    
+    }
+
+    //PP enligt tfm 8650
+    //variPP = Analythic(sigma, returnPP,T,salaryvec,0.025*(17.21/18.5)*12,PPv,PPv95,PPv05);    
+    //IP enligt tfm 55360 
+    variIP = Analythic(0.02, salarygrowth, T, salaryvec, 0.16*(17.21/18.5)*12, IPM, IPH, IPL);
+
+    var NollaIP = 1;    
+    //1 stands for PP
+    var salPPH = [];
+    var salPPM = [];
+    var salPPL = [];
+    Analythic_ver2(sigma, returnPP, timeS, timeP, timeE, salaryvec, 0.025*(17.21/18.5)*12, PPM, PPH, PPL, 1, DTTP, salPPH, salPPM, salPPL);
+
+    for (i = 0; i < (timeE-timeS); i++){
+        totHög[i] = PPH[i] + TPH[i] + PSH[i];        //medel,övre, under resultatet excusive inkostpension 
+        totMedel[i] = PPM[i] + TPM[i] + PSM[i];
+        totLåg[i] = PPL[i] + TPL[i] + PSL[i];
+    }
+    console.log("TotMedel: "+totMedel)
+
+    var variPP = 0;
+
+
+    var salvecIPH = utbetalningIP(timeP, timeE+1, IPH[T-1], DTIP);
+
+    var salvecIPM = utbetalningIP(timeP, timeE+1, IPM[T-1], DTIP);
+
+    var salvecIPL = utbetalningIP(timeP, timeE+1, IPL[T-1], DTIP);
+
+
+
+
+    console.log("Salary IP: "+salvecIPM)
+
+    console.log("IP="+((IPM[T-1]+70500)/DTIP))
+    console.log("Tot IP = "+ parseInt(IPM[T-1]+70500) + "Tot PP = "+parseInt(PPM[T-1]+14300))
+    if (id == 4 || id == 2){
+        var data = {IP: IPM[T-1], PP: PPM[T-1], GP: 0,TP: TPM[T-1],  PS: PSM[T-1]}           //Data för tårtdiagrammet som visar tillgångarna vid tiden T=65
+    }else if (id == 3){
+        var data = {IP: IPH[T-1], PP: PPH[T-1], GP: 0, TP: TPH[T-1],  PS: PSH[T-1]}
+    }else if(id == 1){
+        var data = {IP: IPL[T-1], PP: PPL[T-1], GP: 0, TP: TPL[T-1], PS: PSL[T-1]}
+    }
+    console.log("PP="+(((PPM[T-1]+14300)/DTPP)))
+
+    var GPH;
+    var GPM;
+    var GPL;
+    
+    for (i = T; i < T+T2 - 1; i++){
+        GPM = utbetalningGP(prisBasBelopp, salvecIPM[i-T]/12);
+        salaryvec[i] = (salvecIPM[i-T] + salPPM[i])/12 + GPM + salTPM[i]/12 + salPSM[i]/12;
+        GPH = utbetalningGP(prisBasBelopp, salvecIPH[i-T]/12);
+        salaryvecH[i] = (salvecIPH[i-T] + salPPH[i])/12 + GPH + salTPH[i]/12 + salPSH[i]/12;            //Garantipensionen räknas ut och allt sumeras i en vector som representerar månadsutbetalningarna.
+        GP[i] = GPM;
+        GPL =  utbetalningGP(prisBasBelopp, salvecIPL[i-T]/12);
+        salaryvecL[i] = (salvecIPL[i-T] + salPPL[i])/12 + GPL + salTPL[i]/12 + salPSL[i]/12;
+    }
+    
+    if (id == 4){
+    console.log("TPSAL: "+salTPH+"Längd "+totHög.length+" Högsta nummer: "+ Math.max.apply(null,totHög))
+    var color = "rgb[50,150,255]"
+
+    plotFunction(totMedel, totHög, totLåg, timeS, timeE, Math.max.apply(null, totHög), color, "#plot1", "Ålder", "Totala ackumilerade besparingar(kr)", "Pensions besparingar över tiden (Alla senarior)", "plot1_id");
+
+    console.log(GP)
+    plotFunction(salaryvec, salaryvecH, salaryvecL, timeS, timeE, Math.max.apply(null, salaryvecH), color, "#plot3", "Ålder", "Lön/Pension(kr)", "Lön över tiden (Alla senarior)", "plot3_id");
+    document.getElementById("BeforeP").innerHTML = "Till höger kan man se hur den totala pensionen kommer att utvecklas om man har den löneutveckling som är antagen up till pensionsålder. Efter pensions ålder så kan man se hur uttagen kommer påverka besparingarna. Sannolikheten att hamna någon stans innom intervallet på figuren är 90% vilket betyder att man kan med bara 5% sannolikhet hamna över det översa strecket och under det understa. Här har man antagit samma investerings strategi från 25 år till 64 år vilket man i verkligheten inte gör. En aggresiv strategi kan bestå av 100% aktier fram till kanske 45 års ålder sedan börjar man byta ut aktier mot mer säkra räntepapper.";
+    document.getElementById("pay").innerHTML = "Beroende på vad den totala acummulerade pensionen blir när man gå i pension så kommer de månads enliga utbetalningarna(lön) efter pension variera. Igen så representerar intervallet en 90% sannolikhet. Den här figuren är till för att demonstreara hur den totala pensionen faktisk kommer se ut om man ser det som månads utbetalningar. Detta för att göra det enklare för indevider att lättare koppla pensionen till det vardagliga livet. Här kan ett tankesett vara att tänka hur pension kan jag riskera att ha och därmed anpassa risken efter det. Om man inte kan eller inte är villig att förlora mycket så kan det vara fördelaktigt att anpassa pensionen till en lägre risk. Notera att det ser ut som att pensionen sjunker varje månad. Det gör den faktiskt men det finns en förklaring som jag tror att du gillar. Förklaringen är att det finns en så kallad förtidsränta som är på ca 1.6% som gör att du får ut mer av pensionen i början av pensionen då man kanske också vill ha mer. Man kan säga att du tar ut lite av pensionen i förtid istället för att ha samma pension livet ut.";
+    document.getElementById("high1").innerHTML = parseInt(totHög[1] - totHög[0]);
+    document.getElementById("high5").innerHTML = parseInt(totHög[5] - totHög[4]);
+    document.getElementById("high15").innerHTML = parseInt(totHög[15] - totHög[14]);
+    document.getElementById("mean1").innerHTML = parseInt(totMedel[1] - totMedel[0]);
+    document.getElementById("mean5").innerHTML = parseInt(totMedel[5] - totMedel[4]);
+    document.getElementById("mean15").innerHTML = parseInt(totMedel[15] - totMedel[14]);
+    document.getElementById("low1").innerHTML = parseInt(totLåg[1] - totLåg[0]);
+    document.getElementById("low5").innerHTML = parseInt(totLåg[5] - totLåg[4]);
+    document.getElementById("low15").innerHTML = parseInt(totLåg[15] - totLåg[14]);
+    }
+
+    else if (id == 3)
+    {
+    var color = "rgb[150, 150, 20]"
+    plotFunction(totHög, totHög, totHög, timeS, timeE-1, Math.max.apply(null, totHög), color, "#plot1", "Ålder", "Totala ackumilerade besparingar(kr)", "Pensions besparingar över tiden (Bästa senariot)", "plot1_id");
+    plotFunction(salaryvecH, salaryvecH, salaryvecH, timeS, timeE, Math.max.apply(null, salaryvec), color, "#plot3", "Ålder", "Lön/pension(kr)", "Lön över tiden (Bästa senariot)", "plot3_id");
+    document.getElementById("BeforeP").innerHTML = "Här visualiseras det bästa senariot med 95% säkerhet. Det man kan se i figuren är att upp till pensionen betalar man in pengar som sedan efter pension betalas ut och därför minskar besparingarna vid 65  år ålder.";
+    document.getElementById("pay").innerHTML = "Från figuren ovan kan man sedan räkna ut vad för pension en får i måndaden. Här är även garantipension inräknad om inkomstpenionen blir tillräkligt låg. Pensionen är "+parseInt(1000*(salaryvecH[T+1])/salaryvecH[T-1])/10 +"% av lönen innan pension";
+    }else if (id == 2)
+    {
+    var color = "rgb[150, 150, 20]"
+    plotFunction(totMedel, totMedel, totMedel, timeS, timeE-1, Math.max.apply(null, totHög), color, "#plot1", "Åldr", "Totala besparingarna(kr)", "Besparingarna över tiden (Medel senariot)", "plot1_id");
+    plotFunction(salaryvec, salaryvec, salaryvec, timeS,timeE, Math.max.apply(null, salaryvec), color, "#plot3", "Ålder", "Lön/Pension(kr)", "Lön över tiden (Medel senariot)", "plot3_id");
+    document.getElementById("BeforeP").innerHTML = "Här visualiseras det medel senariot som är baserat på medelvärdet i prognnosen. Det man kan se i figuren är att upp till pensionen betalar man in pengar som sedan efter pension betalas ut och därför minskar besparingarna vid 65  år ålder.";
+    document.getElementById("pay").innerHTML = "Från figuren ovan kan man sedan räkna ut vad för pension en får i måndaden. Här är även garantipension inräknad om inkomstpenionen blir tillräkligt låg. Pensionen är "+parseInt(1000*(salaryvec[T+1])/salaryvec[T-1])/10 +"% av lönen innan pension";
+    }else if (id==1)
+    {
+    var color = "rgb[150, 150, 20]"
+    plotFunction(totLåg, totLåg, totLåg, timeS, timeE-1, Math.max.apply(null, totHög), color, "#plot1", "Ålder", "Totala ackumilerade besparingarna", "Besparingarna över tiden (Sämsta senariot)", "plot1_id");
+    plotFunction(salaryvecL, salaryvecL, salaryvecL, timeS, timeE, Math.max.apply(null, salaryvec), color, "#plot3", "Ålder", "Lön/Pension(kr)", "Månads lön över tiden (Sämsta senariot)", "plot3_id");
+    document.getElementById("BeforeP").innerHTML = "Här visualiseras det sämsta senariot med 95% säkerhet. Det man kan se i figuren är att upp till pensionen betalar man in pengar som sedan efter pension betalas ut och därför minskar besparingarna vid 65  år ålder.";
+    document.getElementById("pay").innerHTML = "Från figuren ovan kan man sedan räkna ut vad för pension en får i måndaden. Här är även garantipension inräknad om inkomstpenionen blir tillräkligt låg. Pensionen är "+parseInt(1000*(salaryvecL[T+1])/salaryvecL[T-1])/10 +"% av lönen innan pension";
+    }
+
+
+
+    piechart(data, "pie", "#piechartplot");
+    var slider1 = document.getElementById("pensiondel");
+    var output1 = document.getElementById("ålder")
+    output1.innerHTML = slider1.value;
+    slider1.oninput = function(){
+        d3.select("#pension_overtime").remove();
+
+        var t = parseInt(slider1.value);
+        output1.innerHTML = slider1.value;
+        t = t - 65;
+        // år 65 i vektorn TPM,PSM,PPM börjar på plats 40 och för IP börjar den på plats 0;
+        GPM = utbetalningGP(prisBasBelopp, salvecIPM[t]/12);
+        var data1 = {IP: salvecIPM[t]/12, PP: salPPM[t+39]/12, GP: GPM, TP: salTPM[t+39]/12, PS: salPSM[t+39]/12}
+        piechart(data1, "pension_overtime", "#piepension");
+        var tot =  salvecIPM[t]/12 + salPPM[t+39]/12 + GPM + salTPM[t+39]/12 + salPSM[t+39]/12;
+        document.getElementById("pensionsdelar").innerHTML = "Till vänster kan du se ett tårt diagram. Tanken med tårtdiagramet är att visualisera hur månadsutbetalningarna från de olika pensionsdelarna förändras med tiden i procent. Det man kan se är att när inkomstpensionen minskar så ökar garantipensionen. Premiepensionen håller sig jämn över åren. Det beror på att delningstalet som används för att bäräkna utbetalningarna för premiepension räknas om varje år. Tjänste pensionen beror på hur du har betämt hur den ska tas ut. Av hela pensionen motsvarar avrundat till närmaste tiondel. <br/> IP: " + parseInt(1000*(salvecIPM[t]/12)/tot)/10 + "% PP: " +  parseInt(1000*(salPPM[t+39]/12)/tot)/10 + "% TP: " +  parseInt(1000*(salTPM[t+39]/12)/tot)/10 + "% PS: " +  parseInt(1000*(salPSM[t+39]/12)/tot)/10 + "% GP: " +  parseInt(1000*(GPM)/tot)/10+"%." 
+    }
+    
+    var slider2 = document.getElementById("strategi");
+    var output2 = document.getElementById("strat");
+    
+    slider2.oninput = function()
+    {
+        output2.innerHTML = slider2.value;
+        var val = slider2.value;
+            andelAktie = val*10;
+            andelObligation = 100 - andelAktie;
+            document.getElementById("strategityp").innerHTML = "Strategi ";
+            document.getElementById("aktie45").innerHTML = andelAktie+"%";
+            document.getElementById("obligation45").innerHTML = andelObligation+"%";
+            document.getElementById("aktie65").innerHTML = andelAktie/2+"%";
+            document.getElementById("obligation65").innerHTML = andelObligation+andelAktie/2+"%";
+    }
+}
+
+var happy = 0;
+var happyRate = 0;
+var numSum = 0;
+function summary(value)
+{
+    numSum++;
+    if(1 == value)
+    {
+           happy++;
+    }
+    happyRate = 100*happy/numSum;
+    console.log(happyRate + "% out of " + numSum);
+    document.getElementById("survey").innerHTML = "Thank you for your feedback";
+}
+    
+
+
+function triangle(val)
+{
+    val = parseInt(val);
+    
+    var vola = parseFloat(slider.value)
+    var timeS = parseFloat(document.getElementById("Times").value);
+    var timeP = parseFloat(document.getElementById("Timep").value);
+    var timeE = parseFloat(document.getElementById("Timee").value);
+    var payment = parseFloat(document.getElementById("Payment").value);
+    var init = parseFloat(document.getElementById("initial").value);
+    if (Number.isNaN(timeS))
+    {
+        timeS = 25;
+    }
+    if (Number.isNaN(timeP))
+    {
+        timeP = 64;
+    }
+    if (Number.isNaN(timeE))
+    {
+        timeE = 90;
+    }
+    if (Number.isNaN(payment))
+    {
+        payment = 31000*12;
+    }
+    if (Number.isNaN(init))
+    {
+        init = 31000*12;
+    }
+    vola = vola;
+    var T = (timeP - timeS);
+    var T2 = (timeE - timeP) + 1;
+    var sigma = vola;
+    var mu = 0.0;
+    var n = 100;
+    var s0 = 100;
+    var PP = payment*0.025*(17.21/18.5);
+    var IP = payment*0.16*(17.21/18.5);
+    console.log("To PP:" + PP  +" and to IP:" + IP);
+
+    var salaryvec = [];
+    var salaryvecH = [];
+    var salaryvecL = [];
+    var payv = [];
+    var salarygrowth = 0.01;
+    var returnPP = 0.021
+    var returnPS = 0.021
+    var returnTP = 0.021
+    var ps_rate = 0.05;
+    var skatt = 0.28;
+    var enable_PS = 1;
+    var enable_TP =1;
+
+    for (i = 0; i < T; i++)
+    {
+        payv[i] = payment;
+    }
+    
+    salaryvec[0] = (payv[0])/12;
+    salaryvecH[0] = (salaryvecH[0])/12;
+    salaryvecL[0] = (salaryvecL[0])/12;
+
+    for (i = 1; i < T; i++)
+    {
+        salaryvec[i] = salaryvec[i-1]*(1 + salarygrowth);
+        salaryvecH[i] = salaryvec[i];
+        salaryvecL[i] = salaryvec[i];
+    }
+
+    console.log("Slutlön = " + salaryvec[T-1])
+
+    var sigma = riskclass(salaryvec, mu, vola, 0.025*(17.21/18.5));  
+
+    var TPM = [];  //tjänstepension medel
+    var TPH = [];  //tjänstepension hög
+    var TPL = [];  //tjänstepension låg
+    
+    var PSM = [];  
+    var PSH = [];
+    var PSL = [];
+
+    var PPv = [];
+    var PPv95 = [];
+    var PPv05 = [];
+
+    var IPv = [];
+    var IPv95 = [];
+    var IPv05 = [];
+    var AP7 = 0;
+    if (AP7 == 1)
+    {
+        sigma = 0.14;
+    }
+    var TP;
+
+    if (enable_TP==1)
+    {
+        if (payment<=40250)
+        {
+            TP = payment*0.04*ServiceWorkerRegistration;
+        }else
+        {
+        var payment1 = 40250;
+        var payment2 = payment - payment1;
+        TP = payment1*0.04 + payment2*0.3;
+        }
+    Analythic(sigma, returnTP, T, salaryvec, 0.04*12, TPM, TPH, TPL);
+    }else
+    {
+    for (i = 0; i < T; i++)
+    {
+        TP = 0;
+        TPM[i]=0;
+        TPH[i]=0;
+        TPL[i]=0;
+    }    
+    }
+
+    if (enable_PS==1)
+    {
+        Analythic(sigma, returnPS, T, salaryvec, ps_rate*0.67*12, PSM, PSH, PSL);
+    }else
+    {
+    for (i = 0; i < T; i++)
+    {
+        PSM[i] = 0;
+        PSH[i] = 0;
+        PSL[i] = 0;
+    }    
+    }
+    Analythic(sigma, returnPP, T, salaryvec, 0.025*(17.21/18.5)*12, PPv, PPv95, PPv05);
+    Analythic(0.02, salarygrowth, T, salaryvec, 0.16*(17.21/18.5)*12, IPv, IPv95, IPv05);
+    var color = "rgb[150, 150, 20]"
+    d3.select("#plot4_id").remove()
+    if (val == 1)
+    {
+        document.getElementById("PS").innerHTML = "InkomstPension"; plotFunction(IPv, IPv05, IPv95, timeS, timeP, Math.max.apply(null, IPv95), color, "#plot4", "Ålder", "Totala ackumilerade besparingarna (kr)", "Prognos av Inkomstpension över tiden", "plot4_id");
+    }else if (val == 2)
+    {
+        document.getElementById("PS").innerHTML = "PremiePension"; plotFunction(PPv, PPv05, PPv95, timeS, timeP, Math.max.apply(null, PPv95), color, "#plot4", "Ålder", "Totala ackumilerade besparingarna (kr)", "Prognos av Premiepension över tiden", "plot4_id");
+    }else if (val == 3)
+    {
+        document.getElementById("PS").innerHTML = "TjänstePension";
+        plotFunction(TPM, TPL, TPH, timeS, timeP, Math.max.apply(null, TPH), color, "#plot4", "Ålder", "Totala ackumilerade besparingarna (kr)", "Prognos av Tjänstepension över tiden", "plot4_id");
+    } else if (val == 4)
+    {
+        document.getElementById("PS").innerHTML = "Privat Sparande";
+        plotFunction(PSM, PSL, PSH, timeS, timeP, Math.max.apply(null, PSH), color, "#plot4", "Ålder", "Totala ackumilerade besparingarna (kr)", "Prognos av Privat sparande över tiden", "plot4_id");
+    }
+}
+    
+
+
+</script>
+
+<div class="row">
+    <div class="col-md-3"  id="piechartplot">
+        <p style="font-size:15px", id= "BeforeP"></p>
+    </div>
+    <div class="col-md-9">
+        <div id="plot1"></div>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="e" value="3" onclick="main(this.value)">HIGH </button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px"  id="f" value="2" onclick="main(this.value)">AVERAGE</button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="g" value="1" onclick="main(this.value)">LOW</button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="h" value="4" onclick="main(this.value)">ALL</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3" id="piechartplot">
+        <p style="font-size:15px", id= "pay"></p>
+    </div>
+    <div class="col-md-9">
+        <div id="plot3"></div>
+    </div>
+</div>
+<!--<p style="font-size:15px", id= "pay"></p>
+<div id="plot3"></div>-->
+<div id="box"></div>
+    
+<!--piechart för att visa hur penisonen förändras över tid-->
+<div class="slidecontainer">
+  <input type="range" min="65" max="90" value ="65"  class="slider" id="pensiondel" >
+  <p>Ålder: <span id="ålder"></span></p>
+</div>
+<div class="row">
+    <div  class="col-md-6" id="piepension">
+    </div>
+    <div class="col-md-6">
+        <p id="pensionsdelar">Till vänster kan du se ett tårt diagram. Tanken med tårtdiagramet är att visualisera hur månadsutbetalningarna från de olika pensionsdelarna förändras med tiden i procent. Det man kan se är att när inkomstpensionen minskar så ökar garantipensionen. Premiepensionen håller sig jämn över åren. Det beror på att delningstalet som används för att bäräkna utbetalningarna för premiepension räknas om varje år. Tjänste pensionen beror på hur du har betämt hur den ska tas ut.</p>
+    </div>
+</div>
+    
+<div class="row">
+    <div class="col-md-12">
+        <p>Pyramiden representerar de olika delarna din pension består av. De två största delarna är Inkomstpensionen (IP) och Tjänstepensionen (TP). De två mindre delarna är Premeipensionen (PP) och det egna pensionssparandet (PS). För att se prognosen upp tills pensionsåler för varje enskilld del kan du vänligen trycka på den del i pyramiden som representerar den pensions del du vill se. Som man kan se om man jämför inkostpensionen med de andra typerna så har den en mycket lägre spridning. Det betyder att oavsett hur premiepensionen går så kommer inte inkomstpensionen variera så mycket vilket ger en form av säkerhet till din pension.</p>
+    </div>
+</div>
+<div class="row">
+<div class="col-md-4">
+    <svg id="triangle" width="340" height="340" >
+        <circle cx="170" cy="170" r="170" style="fill: darkmagenta"></circle>
+      <a onclick=" triangle(1)">
+        <path d="M  50   265
+                 L  90   187
+                 L  208  187
+                 L  248  265
+                 L  50   265
+                 Z"
+              fill="#ff0000"/>
+        <text x="150"
+              y="225"
+              fill="#000"
+              text-anchor="middle"
+              alignment-baseline="middle">
+          IP
+        </text>
+      </a>
+      <a onclick=" triangle(2)">
+        <path d="M  290  265
+                 L  252  265
+                 L  212  187
+                 L  250  187
+                 L  290  265
+                 Z"
+              fill="#ffab00"/>
+
+        <text x="250"
+              y="225"
+              fill="#000"
+              text-anchor="middle"
+              alignment-baseline="middle">
+          PP
+        </text>
+      </a>
+      <a onclick=" triangle(3)">
+        <path d="M   90 183
+                 L  130 107
+                 L  210 107
+                 L  250 183
+                 L   90 183
+                 Z"
+              fill="#006cff"/>
+
+        <text x="170"
+              y="145"
+              fill="#000"
+              text-anchor="middle"
+              alignment-baseline="middle">
+          TP
+        </text>
+      </a>
+      <a onclick=" triangle(4)">
+        <path d="M  130 103
+                 L  170  25
+                 L  210 103
+                 L  130 103
+                 Z"
+              fill="#4fbc2e"/>
+
+        <text x="170"
+              y="75"
+              fill="#000"
+              text-anchor="middle"
+              alignment-baseline="middle">
+          PS
+        </text>
+      </a>
+    </svg>
+    <p style="font-size: 15px", id="PS">Knapp ej tryckt</p>
+    </div>
+    <div class="col-md-8">
+        <div id="plot4"></div>
+    </div>
+</div>
+
+
+<div class="slidecontainer">
+  <input type="range" min="1" max="10" value ="1"  class="slider" id="strategi" >
+  <p>Investeringsstrategi: <span id="strat"></span></p>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table>
+          <tr>
+            <th>Strategi</th>
+            <th> Aktie -> 45 </th>
+            <th> Obligation -> 45</th>
+            <th> Aktie 45 -> 65</th>
+            <th> Obligation 45 -> 65</th>
+          </tr>
+          <tr>
+            <th><p id="strategityp"> </th>
+            <th><p id="aktie45"></p></th>
+            <th><p id="obligation45"></p></th>
+            <th><p id="aktie65"></p></th>
+            <th><p id="obligation65"></p></th>
+          </tr>
+        </table>
+    </div>
+</div>
+    
+<div class="row">
+    <div class="col-md-7">
+        <p>En intressant syssätt på pensionen är frågan, hur mycket risk känner jag att jag kan bära när det kommer till min pension. Bär jag en högre risk finns chansen att vinna mer men också att förlora mer. En person som tjänar mycket kasnke känner att den kan ta på sig en större risk ihopp om at pensionen ska utväcklas, medans en person som har left på en låg lön känner att de vore svårt att få en lägre pension. Detta är en personlig fråga som man bör ställa till sig själv för att sedan kunna göra ett val som man själv kan känna sig trygg i. här nedan visas medelvärdet på din pension för en låg riskklass. Ta en titt på hur bra det kan gå och hur dåligt det kan gå och sedan försök fråga dig själv hur lågt du kan gå. Har du betämt dig? Fyll i din lägsta pension du kan tänka dig att ha om det värsta utfall skulle ske. Sedan kommer en risk anpassas och så får vi se om resultatet ger någon klar het.</p>
+    </div>
+    <div class="col-md-5">
+         Om i framtiden det utfallet blir det lägsta som man kan vänta sig vad är då den lägsta pension du kan tänka dig <input type="text" id="värstaPension" value="Pension/Månad">
+    </div>
+</div>
+    
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <p class="text_col">SÅ! För att sammanfatta denna artikel så kan man börja med att säga att pensionen består av många delar(Inkomt pension, Premie pension, Tjänste pension, Privat sparande och Garanti pension). Den största delen av dem alla är inkomst pensionen och den är också minst riskfylld. Premiepensionen har du egen firhet att välja hur den ska placeras och gör du inget placeras den i SÅFA fonden som är byggd för att följa index. Det är viktigt att förstå att pensionsspararen bär en risk när pengarna placeras och det är viktigt att veta att man som pensionssparare kan kontrollera risken man tar på sig genom att välja hur man placerar pengarna. Därför har vi här försökt visa hur spridningen på besparingarna kan se ut över åren och vad det har för effekt på de utbetalningar man får efter pension. Det är 90% sannolikhet att hamna inom intervallet på figurerna och sträcket mitten är väntevärdet.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p style="font-size:15px", id="survey"> Was this blog helpfull? </p>
+    </div>
+</div>
+    
+<div class="row">
+    <div class="col-md-12">
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="yes" value="1" onclick="summary(this.value)">YES!</button>
+        <button class="button" style = "height:50px;width:200px;border-radius: 2px" id="no" value="2" onclick="summary(this.value)">NO!</button>
+    </div>
+</div>
+<!--<p style="font-size:15px", id= "sum"></p>-->
+</body>
+<!-- style="border:13px solid #000; -->
